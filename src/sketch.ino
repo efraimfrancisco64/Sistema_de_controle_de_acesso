@@ -3,6 +3,11 @@
 
 #define ROWS_NUM 4
 #define COLS_NUM 4
+#define LED_VERDE 25
+#define LED_VERMELHO 26
+#define BUZZER 27
+const String PIN_CORRETO = "1234";
+String PIN_DIGITADO = "";
 
 char Key[ROWS_NUM][COLS_NUM] = {
     {'1', '2', '3', 'A'},
@@ -20,14 +25,45 @@ void setup()
   Serial.begin(115200);
   delay(1000);
   Serial.println("Teclado Ligado com sucesso");
+
+  pinMode(LED_VERDE, OUTPUT);
+  pinMode(LED_VERMELHO, OUTPUT);
+  digitalWrite(LED_VERDE, LOW);
+  digitalWrite(LED_VERMELHO, LOW);
 }
 
 void loop()
 {
-  char Key = keypad.getKey();
-  if (Key)
+  char tecla = keypad.getKey();
+  if (tecla)
   {
-    Serial.print("Tecla pressionada: ");
-    Serial.println(Key);
+    Serial.print("Tecla: ");
+    Serial.println(tecla);
+
+    if (tecla >= '0' && tecla <= '9')
+    {
+      PIN_DIGITADO += tecla;
+    }
+  }
+  if (tecla == '#')
+  {
+    if (PIN_DIGITADO == PIN_CORRETO)
+    {
+      Serial.println("Acesso Permitido");
+      digitalWrite(LED_VERDE, HIGH);
+      delay(200);
+      digitalWrite(LED_VERDE, LOW);
+    }
+    else if (PIN_DIGITADO != PIN_CORRETO)
+    {
+      Serial.println("Acesso Negado");
+      digitalWrite(LED_VERMELHO, HIGH);
+      delay(200);
+      digitalWrite(LED_VERMELHO, LOW);
+    }
+  }
+  else if (tecla == '*')
+  {
+    Serial.println("Digite o PIN novamente");
   }
 }
