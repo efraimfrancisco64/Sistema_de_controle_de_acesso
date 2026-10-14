@@ -52,15 +52,6 @@
       "attrs": {
         "value": "220"
       }
-    },
-    {
-      "type": "wokwi-buzzer",
-      "id": "bz1",
-      "top": 12,
-      "left": -353.4,
-      "attrs": {
-        "volume": "0.1"
-      }
     }
   ],
   "connections": [
@@ -184,23 +175,6 @@
     ],
     [
       "led2:C",
-      "esp:GND.1",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bz1:2",
-      "esp:27",
-      "green",
-      [
-        "v28.8",
-        "h321.01"
-      ]
-    ],
-    [
-      "bz1:1",
       "esp:GND.1",
       "green",
       [
