@@ -70,6 +70,22 @@
       "attrs": {
         "pins": "i2c"
       }
+    },
+    {
+      "type": "wokwi-relay-module",
+      "id": "relay1",
+      "top": -393.4,
+      "left": 537.6,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r3",
+      "top": -15.25,
+      "left": 595.2,
+      "attrs": {
+        "value": "220000"
+      }
     }
   ],
   "connections": [
@@ -256,6 +272,61 @@
         "h-38.4",
         "v412.9",
         "h177.41"
+      ]
+    ],
+    [
+      "relay1:IN",
+      "esp:23",
+      "green",
+      [
+        "h-28.8",
+        "v393.4"
+      ]
+    ],
+    [
+      "relay1:GND",
+      "esp:GND.2",
+      "black",
+      [
+        "h-48",
+        "v393.2"
+      ]
+    ],
+    [
+      "relay1:VCC",
+      "esp:3V3",
+      "red",
+      [
+        "h-38.4",
+        "v355.2",
+        "h-494.59"
+      ]
+    ],
+    [
+      "relay1:COM",
+      "esp:3V3",
+      "green",
+      [
+        "h20.4",
+        "v325",
+        "h-489.6"
+      ]
+    ],
+    [
+      "relay1:NO",
+      "r3:2",
+      "green",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "r3:1",
+      "esp:GND.2",
+      "green",
+      [
+        "v28.8",
+        "h-494.44"
       ]
     ]
   ],

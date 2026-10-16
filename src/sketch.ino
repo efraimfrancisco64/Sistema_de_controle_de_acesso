@@ -8,6 +8,7 @@
 #define LED_VERDE 25
 #define LED_VERMELHO 26
 #define BUZZER 27
+#define RELAY 23
 LiquidCrystal_I2C LCD(0x27, 16, 2); // Endereço I2C do LCD e tamanho (16 colunas, 2 linhas)
 
 // Definição do PIN correto e variáveis de controle
@@ -37,6 +38,8 @@ void setup()
   pinMode(BUZZER, OUTPUT);
   pinMode(LED_VERDE, OUTPUT);
   pinMode(LED_VERMELHO, OUTPUT);
+  pinMode(RELAY, OUTPUT);
+  digitalWrite(RELAY, HIGH);
   digitalWrite(LED_VERDE, LOW);
   digitalWrite(LED_VERMELHO, LOW);
 
@@ -61,7 +64,7 @@ void loop()
       LCD.clear();
       LCD.setCursor(0, 0);
       LCD.println("Desbloqueado");
-      delay(100000);
+      delay(1000);
       tone(BUZZER, 1000, 300);
       noTone(BUZZER);
     }
@@ -70,6 +73,7 @@ void loop()
       LCD.clear();
       LCD.setCursor(0, 0);
       LCD.println("Bloqueado");
+      digitalWrite(RELAY, HIGH);
       LCD.clear();
       LCD.setCursor(0, 0);
       LCD.println("Aguarde por 30 segundos.");
@@ -107,6 +111,9 @@ void loop()
       tone(BUZZER, 1000, 100);
       delay(100);
       noTone(BUZZER);
+      digitalWrite(RELAY, LOW);  // Fecha o relay → "desbloqueia"
+      delay(1000);               // Mantém aberto 1 segundo
+      digitalWrite(RELAY, HIGH); // Abre o relay → "bloqueia" de novo
     }
     else if (PIN_DIGITADO != PIN_CORRETO)
     {
@@ -119,6 +126,7 @@ void loop()
       digitalWrite(LED_VERMELHO, HIGH);
       delay(200);
       digitalWrite(LED_VERMELHO, LOW);
+      digitalWrite(RELAY, HIGH);
       tentativas++;
       if (tentativas >= 3)
       {
@@ -126,6 +134,7 @@ void loop()
         tempoBloqueio = millis();
         tone(BUZZER, 200, 1000);
         noTone(BUZZER);
+        digitalWrite(RELAY, HIGH);
       }
     }
     PIN_DIGITADO = "";
