@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <Keypad.h>
+#include <LiquidCrystal_I2C.h>
 
 // Definição do tamanho do teclado e pinos
 #define ROWS_NUM 4
@@ -7,6 +8,8 @@
 #define LED_VERDE 25
 #define LED_VERMELHO 26
 #define BUZZER 27
+LiquidCrystal_I2C LCD(0x27, 16, 2); // Endereço I2C do LCD e tamanho (16 colunas, 2 linhas)
+
 // Definição do PIN correto e variáveis de controle
 const String PIN_CORRETO = "1234";
 String PIN_DIGITADO = "";
@@ -31,10 +34,18 @@ void setup()
   delay(1000);
   Serial.println("Teclado Ligado com sucesso");
 
+  pinMode(BUZZER, OUTPUT);
   pinMode(LED_VERDE, OUTPUT);
   pinMode(LED_VERMELHO, OUTPUT);
   digitalWrite(LED_VERDE, LOW);
   digitalWrite(LED_VERMELHO, LOW);
+
+  LCD.init();
+  LCD.backlight();
+  LCD.setCursor(0, 0);
+  LCD.print("Digite o PIN:");
+  LCD.setCursor(0, 1);
+  LCD.print("> __________");
 }
 // Função principal do loop
 void loop()
@@ -47,20 +58,31 @@ void loop()
     {
       bloqueio = false;
       tentativas = 0;
-      Serial.println("Sistema desbloqueado");
+      LCD.clear();
+      LCD.setCursor(0, 0);
+      LCD.println("Desbloqueado");
+      delay(100000);
+      tone(BUZZER, 1000, 300);
+      noTone(BUZZER);
     }
     else
     {
-      Serial.println("Sistema bloqueado. Aguarde 30 segundos.");
-      delay(5000);
+      LCD.clear();
+      LCD.setCursor(0, 0);
+      LCD.println("Bloqueado");
+      LCD.clear();
+      LCD.setCursor(0, 0);
+      LCD.println("Aguarde por 30 segundos.");
+      delay(100000);
       return;
     }
   }
   // Verifica se uma tecla foi pressionada
   if (tecla)
   {
-    Serial.print("Tecla: ");
-    Serial.println(tecla);
+    LCD.clear();
+    LCD.setCursor(0, 0);
+    LCD.println(tecla);
 
     if (tecla >= '0' && tecla <= '9')
     {
@@ -73,15 +95,27 @@ void loop()
     // Verifica se o PIN digitado é igual ao PIN correto para ser validado
     if (PIN_DIGITADO == PIN_CORRETO)
     {
-      Serial.println("Acesso Permitido");
+      LCD.clear();
+      LCD.setCursor(0, 0);
+      LCD.println("Acesso Permitido");
       digitalWrite(LED_VERDE, HIGH);
       delay(200);
       digitalWrite(LED_VERDE, LOW);
       tentativas = 0; // Reset tentativas após sucesso
+      tone(BUZZER, 1000, 100);
+      delay(100);
+      tone(BUZZER, 1000, 100);
+      delay(100);
+      noTone(BUZZER);
     }
     else if (PIN_DIGITADO != PIN_CORRETO)
     {
-      Serial.println("Acesso Negado");
+      LCD.clear();
+      LCD.setCursor(0, 0);
+      LCD.println("Acesso Negado");
+      tone(BUZZER, 500, 300);
+      delay(100);
+      noTone(BUZZER);
       digitalWrite(LED_VERMELHO, HIGH);
       delay(200);
       digitalWrite(LED_VERMELHO, LOW);
@@ -90,7 +124,8 @@ void loop()
       {
         bloqueio = true;
         tempoBloqueio = millis();
-        Serial.println("Sistema bloqueado por 30 segundos devido a 3 tentativas incorretas.");
+        tone(BUZZER, 200, 1000);
+        noTone(BUZZER);
       }
     }
     PIN_DIGITADO = "";
@@ -98,7 +133,9 @@ void loop()
   // Verifica se a tecla pressionada é '*' para limpar o PIN digitado
   else if (tecla == '*')
   {
-    Serial.println("Digite o PIN novamente");
+    LCD.clear();
+    LCD.setCursor(0, 0);
+    LCD.println("Digite novamente");
     PIN_DIGITADO = "";
   }
 }
